@@ -240,8 +240,8 @@
           <td>{{$row->id}}</td>
           <td>{{$row->product_code}}</td>
           <td>{{$row->name}}</td>
-          <td>{{$row->category_id}}</td>
-          <td>{{$row->brand_id}}</td>
+          <td>{{$row->category_name}}</td>
+          <td>{{$row->brand_name}}</td>
           <td><b>{{number_format($row->price)}}</b><sup>vnd</sup></td>
           <td>{{ $row->created_at }}</td>      
           <td>

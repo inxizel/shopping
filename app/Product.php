@@ -21,8 +21,4 @@ class Product extends Model
         'discount_price'
     ];
 
-    public function brand()
-    {
-        return $this->hasOne('App\Brand');
-    }
 }

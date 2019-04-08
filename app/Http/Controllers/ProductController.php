@@ -9,6 +9,7 @@ use App\Product;
 use App\Image;
 use App\Brand;
 use App\Category;
+use App\ProductDetail;
 class ProductController extends Controller
 {
     /**
@@ -20,7 +21,22 @@ class ProductController extends Controller
     {
         $brands = Brand::get(); // select option brand add new product
         $categories = Category::get(); // select option categories add new product
-        $products = Product::orderby('id','desc')->paginate(10);
+        // $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
+        // ->join('product_details', 'product_details.product_id', '=', 'products.id')
+        // ->join('option_values', 'option_values.id', '=', 'product_details.size')
+        // //->where('option_values.option_id', 2)
+        // ->select('brands.id as brand_id', 'products.id as product_id', 'products.*', 'brands.name as brand_name', 'option_values.value as name_size', 'product_details.*')
+        // ->orderby('products.id','desc')
+        // ->paginate(10);
+        //ok oke
+        //$product_detail = ProductDetail::join('')
+
+        $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
+        ->join('categories', 'categories.id', '=', "products.category_id")
+        ->select('brands.id as brand_id', 'products.id as product_id', 'products.*', 'brands.name as brand_name','categories.name as category_name')
+        ->orderby('products.id','desc')
+        ->paginate(10);
+        //dd($products);
         return view('admin.product.index',['data'=>$products, 'brands'=>$brands,'categories'=>$categories ]);
     }
 
