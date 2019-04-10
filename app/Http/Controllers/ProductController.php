@@ -92,7 +92,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Product::find($id);
+        return $data;
     }
 
     /**
@@ -115,7 +116,25 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data['product_code'] = $request->code;
+        $data['name'] = $request->name;
+        $data['description'] = $request->description;
+        $data['price'] = $request->price;
+        $data['brand_id'] = $request->brand;
+        $data['category_id'] = $request->category;
+        
+    
+        $input =Product::find($id)->update([
+            'product_code' => $data['product_code'],
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'price' => $data['price'],
+            'brand_id' => $data['brand_id'],
+            'category_id' => $data['category_id']
+        
+        ]);
+
+        echo json_encode($data);  
     }
 
     /**
@@ -140,6 +159,33 @@ class ProductController extends Controller
                 'image'      => $path
             ]);
         }
+    }
+
+    public function detail($id)
+    {
+        // $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
+        // ->join('product_details', 'product_details.product_id', '=', 'products.id')
+        // ->join('option_values', 'option_values.id', '=', 'product_details.size')
+        // //->where('option_values.option_id', 2)
+        // ->select('brands.id as brand_id', 'products.id as product_id', 'products.*', 'brands.name as brand_name', 'option_values.value as name_size', 'product_details.*')
+        // ->orderby('products.id','desc')
+        // ->paginate(10);
+        //ok oke
+        //$product_detail = ProductDetail::join('')
+
+        $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
+        ->join('categories', 'categories.id', '=', "products.category_id")
+        ->select('products.*','brands.name as brand_name','categories.name as category_name')->find($id);
+
+        $product_details = ProductDetail::join('colors', 'product_details.color_id', '=', "colors.id")
+        ->join('sizes', 'product_details.size_id', '=', "sizes.id")
+        ->select('product_details.*','sizes.value as size_name','colors.value as color_name')
+
+       
+        ->where('product_id', $id)->get();
+
+        //dd($product_details);
+        return view('admin.product.product_detail',['row'=>$products,'data'=>$product_details]);
     }
 
 

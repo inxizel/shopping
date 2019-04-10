@@ -33,9 +33,13 @@ Route::prefix('admin')->group(function(){
 			return view ('admin.dashboard.index');
 		});
 		Route::resource('/user','UserController');	
-		Route::resource('/product','ProductController');
 		Route::resource('/brand','BrandController');
 		Route::resource('/category','CategoryController');
+		Route::resource('/size','SizeController');
+		Route::resource('/color','ColorController');
+
+		Route::resource('/product','ProductController');
+		Route::get('/product/detail/{id}', 'ProductController@detail');	
 
 		Route::get('/product-image', function ()
 		{

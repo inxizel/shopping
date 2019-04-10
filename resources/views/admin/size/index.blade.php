@@ -2,79 +2,31 @@
 
 @section('css')
 <!-- vendor css -->
-
+<link href="/admin_assets/lib/jquery-toggles/toggles-full.css" rel="stylesheet">
 @endsection
 
 @section('js')
+<script src="/admin_assets/lib/jquery-toggles/toggles.min.js"></script>
 <script>
-  $( ".product" ).addClass( "active show-sub" );
-</script>
-<script language="javascript">
-  function ChangeToSlug()
-  {
-      var title, slug;
-
-      //Lấy text từ thẻ input title 
-      title = document.getElementById("name-add").value;
-
-      //Đổi chữ hoa thành chữ thường
-      slug = title.toLowerCase();
-
-      //Đổi ký tự có dấu thành không dấu
-      slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-      slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-      slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-      slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-      slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-      slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-      slug = slug.replace(/đ/gi, 'd');
-      //Xóa các ký tự đặt biệt
-      slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
-      //Đổi khoảng trắng thành ký tự gạch ngang
-      slug = slug.replace(/ /gi, "-");
-      //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
-      //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
-      slug = slug.replace(/\-\-\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-/gi, '-');
-      //Xóa các ký tự gạch ngang ở đầu và cuối
-      slug = '@' + slug + '@';
-      slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-      //In slug ra textbox có id “slug”
-      return slug;
-  }
-
-  $("#name-add").change(function(){
-    var slug = 'Permalink: <span  style=\"color: #17a2b8;\">http://domain.com/'+ChangeToSlug()+'</span>' ;
-    //alert(slug);
-    $("#slug").html(slug);
-    $("#slug-add").val(ChangeToSlug());
-
-  });
+  $( ".product" ).addClass( "show-sub" );
 </script>
 
 
+<script type="text/javascript">
 
-<script >
   $('.btn-add').click(function(){
           
     $('#modal-add').modal('show');
 
     //bắt sự kiện submit form thêm mới
     $('#form-add').submit(function (e) {
+
+      //var token = $('meta[name="csrf-token"]').attr('content');
       
       var data = new FormData();
       
-      //data.append('image', $('#image-add')[0].files[0]);
-      data.append('name', $('#name-add').val());
-      data.append('description', $('#description-add').val());
-      data.append('slug', $('#slug-add').val());
-      data.append('product_code', $('#code-add').val());
-      data.append('brand', $('#brand-add').val());
-      data.append('category', $('#category-add').val());
-      data.append('price', $('#price-add').val());
-    
+
+      data.append('value', $('#value-add').val());
       e.preventDefault();
       //lấy attribute data-url của form lưu vào biến url
       var url = $(this).attr('data-url');
@@ -85,7 +37,7 @@
         url: url,
         processData: false,
         contentType: false,
- 
+
         data: data,
         success: function (response) {
           // hiện thông báo thêm mới thành công bằng toastr
@@ -95,7 +47,7 @@
 
           console.log(response);
           setTimeout(function () {
-            window.location.href="/admin/product";
+            window.location.href="/admin/size";
           },800);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -108,19 +60,12 @@
     var id = $(this).data('id');
     $.ajax({
       type: 'get',
-      url : '/admin/product/' + id,
+      url : '/admin/size/' + id,
       success : function(res){
         // add url post update
-        $('#form-edit').attr('data-url','{{ asset('admin/product') }}/'+ res.id);
+        $('#form-edit').attr('data-url','{{ asset('admin/size') }}/'+ res.id);
 
-
-        $('#code-edit').val(res.product_code);
-        $('#name-edit').val(res.name);
-        $('#description-edit').val(res.description);
-        $('#price-edit').val(res.price);
-        $("#brand-edit option[value='"+res.brand_id+"']").prop('selected',true);
-        $("#category-edit option[value='"+res.category_id+"']").prop('selected',true);
-      
+        $('#value-edit').val(res.value);
       }
     })
     $('#modal-edit').modal('show');
@@ -130,7 +75,6 @@
       e.preventDefault();
       //lấy attribute data-url của form lưu vào biến url
       var url = $(this).attr('data-url');
-
     
       $.ajax({
         //sử dụng phương thức post
@@ -138,12 +82,7 @@
         url: url,
         data: {
           //lấy dữ liệu từ ô input trong form thêm mới
-          code: $('#code-edit').val(),
-          name: $('#name-edit').val(),
-          price: $('#price-edit').val(),
-          description: $('#description-edit').val(),
-          brand: $('#brand-edit').val(),
-          category: $('#category-edit').val()
+          value: $('#value-edit').val()
         },
         success: function (response) {
           // hiện thông báo thêm mới thành công bằng toastr
@@ -152,7 +91,7 @@
           //ẩn modal add đi
           $('#modal-edit').modal('hide');
           setTimeout(function () {
-            window.location.href="/admin/product";
+            window.location.href="/admin/size";
           },1000);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -166,34 +105,18 @@
     var id = $(this).data('id');
     $.ajax({
       type: 'post',
-      url : '/admin/product/' + id,
+      url : '/admin/size/' + id,
       data: {
         _method : 'delete'
       },
       success : function(res){
         toastr.success('Delete success!')
         setTimeout(function () {
-          window.location.href="/admin/product";
+          window.location.href="/admin/size";
         },800);
       }
     })
   });  
-
-  function readURL(input) {
-
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $('#uploadPreview').attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-    }
-  }
-
-  $("#image-add").change(function(){
-      readURL(this);
-  });
 
 </script>
 @endsection
@@ -221,24 +144,16 @@
       <thead>
         <tr>
           <th class="wd-5p">ID</th>
-          <th class="wd-5p">Code</th>
-          <th class="wd-15p">Name</th>
-          <th class="wd-5p">Category</th>
-          <th class="wd-5p">Brand</th>
-          <th class="wd-5p">Price</th>
+          <th class="wd-10p">Value</th>
           <th class="wd-10p">Created At</th>
-          <th class="wd-15p">Action</th>
+          <th class="wd-10p">Action</th>
         </tr>
       </thead>
       <tbody>
         @foreach($data as $row)
         <tr>
           <td>{{$row->id}}</td>
-          <td>{{$row->product_code}}</td>
-          <td>{{$row->name}}</td>
-          <td>{{$row->category_name}}</td>
-          <td>{{$row->brand_name}}</td>
-          <td><b>{{number_format($row->price)}}</b><sup>vnd</sup></td>
+          <td>{{$row->value}}</td>
           <td>{{ $row->created_at }}</td>      
           <td>
             <a href="javascript:;" class="btn btn-outline-primary btn-icon mg-r-5 btn-edit" data-id="{{$row->id}}"> 
@@ -247,20 +162,12 @@
             <a href="javascript:;" class="btn btn-outline-danger btn-icon mg-r-5 btn-delete" data-id="{{$row->id}}">
               <div><i class="fa fa-trash-o"></i></div>
             </a>
-            <a href="/admin/product-image" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
-              <div><i class="fa fa-file-image-o"></i></div>
-            </a>
-            <a href="/admin/product/detail/{{$row->id}}" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">
-              <div><i class="fa fa-puzzle-piece"></i></div>
-            </a>
-            
           </td>   
         </tr>
         @endforeach
         
       </tbody>
     </table>
-
   </div>
 </div>
 
@@ -278,7 +185,7 @@
 
 </div>  
 
-  @include('admin.product.modal.add')
-  @include('admin.product.modal.edit')
+  @include('admin.size.modal.add')
+  @include('admin.size.modal.edit')
 
 @endsection

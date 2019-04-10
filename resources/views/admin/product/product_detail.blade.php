@@ -85,7 +85,7 @@
         url: url,
         processData: false,
         contentType: false,
- 
+
         data: data,
         success: function (response) {
           // hiện thông báo thêm mới thành công bằng toastr
@@ -108,19 +108,26 @@
     var id = $(this).data('id');
     $.ajax({
       type: 'get',
-      url : '/admin/product/' + id,
+      url : '/admin/user/' + id,
       success : function(res){
         // add url post update
-        $('#form-edit').attr('data-url','{{ asset('admin/product') }}/'+ res.id);
+        $('#form-edit').attr('data-url','{{ asset('admin/user') }}/'+ res.id);
 
 
-        $('#code-edit').val(res.product_code);
+        $('#email-edit').val(res.email);
         $('#name-edit').val(res.name);
-        $('#description-edit').val(res.description);
-        $('#price-edit').val(res.price);
-        $("#brand-edit option[value='"+res.brand_id+"']").prop('selected',true);
-        $("#category-edit option[value='"+res.category_id+"']").prop('selected',true);
-      
+        $('#mobile-edit').val(res.mobile);
+
+        // Delete attr selected option jquery
+        $("#gender-edit").children().removeAttr("selected");
+        // Add attr selected jquery
+        $("#gender-edit option[value=" + res.gender + "]").attr('selected', 'selected');
+        
+        // Delete checked input default
+        $('#status-edit').removeAttr('checked');
+
+        if(res.status == 'on') $('#status-edit').prop('checked', true);
+        //$('#quantity-edit').val(res.quantity);
       }
     })
     $('#modal-edit').modal('show');
@@ -141,9 +148,7 @@
           code: $('#code-edit').val(),
           name: $('#name-edit').val(),
           price: $('#price-edit').val(),
-          description: $('#description-edit').val(),
-          brand: $('#brand-edit').val(),
-          category: $('#category-edit').val()
+          quantity: $('#quantity-edit').val()
         },
         success: function (response) {
           // hiện thông báo thêm mới thành công bằng toastr
@@ -152,7 +157,7 @@
           //ẩn modal add đi
           $('#modal-edit').modal('hide');
           setTimeout(function () {
-            window.location.href="/admin/product";
+            window.location.href="/product";
           },1000);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -216,7 +221,7 @@
 </div>
 <div class="br-pagebody">
   <div class="br-section-wrapper">
-    <button class="btn btn-primary btn-block mg-b-10 btn-add"><i class="fa fa-send mg-r-10"></i>Add New</button>
+    <a href="/admin/product"><button class="btn btn-primary btn-block mg-b-10 btn-add"><i class="fa fa-send mg-r-10"></i>Back Product List</button></a>
     <table id="datatable1" class="table display responsive nowrap">
       <thead>
         <tr>
@@ -231,7 +236,6 @@
         </tr>
       </thead>
       <tbody>
-        @foreach($data as $row)
         <tr>
           <td>{{$row->id}}</td>
           <td>{{$row->product_code}}</td>
@@ -250,7 +254,50 @@
             <a href="/admin/product-image" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
               <div><i class="fa fa-file-image-o"></i></div>
             </a>
-            <a href="/admin/product/detail/{{$row->id}}" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">
+            <a href="/admin/product-image" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">
+              <div><i class="fa fa-puzzle-piece"></i></div>
+            </a>
+            
+          </td>   
+        </tr>
+        
+      </tbody>
+    </table>
+
+    {{-- List Detail --}}
+    <button class="btn btn-primary btn-block mg-b-10 btn-add"><i class="fa fa-send mg-r-10"></i>Add New</button>
+    <table id="datatable1" class="table display responsive nowrap">
+      <thead>
+        <tr>
+          <th class="wd-5p">ID</th>
+          <th class="wd-5p">Code</th>
+          <th class="wd-15p">Size</th>
+          <th class="wd-5p">Color</th>
+          <th class="wd-5p">Quantity</th>
+          <th class="wd-10p">Created At</th>
+          <th class="wd-15p">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($data as $row)
+        <tr>
+          <td>{{$row->id}}</td>
+          <td>{{$row->product_code}}</td>
+          <td>{{$row->size_name}}</td>
+          <td>{{$row->color_name}}</td>
+          <td>{{$row->quantity}}</td>
+          <td>{{ $row->created_at }}</td>      
+          <td>
+            <a href="javascript:;" class="btn btn-outline-primary btn-icon mg-r-5 btn-edit" data-id="{{$row->id}}"> 
+              <div><i class="fa fa-pencil"></i></div>
+            </a>
+            <a href="javascript:;" class="btn btn-outline-danger btn-icon mg-r-5 btn-delete" data-id="{{$row->id}}">
+              <div><i class="fa fa-trash-o"></i></div>
+            </a>
+            <a href="/admin/product-image" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
+              <div><i class="fa fa-file-image-o"></i></div>
+            </a>
+            <a href="/admin/product/{{$row->id}}" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">
               <div><i class="fa fa-puzzle-piece"></i></div>
             </a>
             
@@ -278,7 +325,5 @@
 
 </div>  
 
-  @include('admin.product.modal.add')
-  @include('admin.product.modal.edit')
 
 @endsection

@@ -78,8 +78,10 @@
         </a><!-- br-menu-link -->
         <ul class="br-menu-sub nav flex-column">
           <li class="nav-item"><a href="/admin/product" class="nav-link">List Product</a></li>
-          <li class="nav-item"><a href="/admin/brand" class="nav-link">Brand</a></li>
-          <li class="nav-item"><a href="/admin/category" class="nav-link">Category</a></li>
+          <li class="nav-item"><a href="/admin/brand" class="nav-link">Brands</a></li>
+          <li class="nav-item"><a href="/admin/category" class="nav-link">Categories</a></li>
+          <li class="nav-item"><a href="/admin/size" class="nav-link">Sizes</a></li>
+          <li class="nav-item"><a href="/admin/color" class="nav-link">Colors</a></li>
         </ul>
         <a href="#" class="br-menu-link">
           <div class="br-menu-item">
