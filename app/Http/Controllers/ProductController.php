@@ -10,6 +10,8 @@ use App\Image;
 use App\Brand;
 use App\Category;
 use App\ProductDetail;
+use App\Color;
+use App\Size;
 class ProductController extends Controller
 {
     /**
@@ -148,14 +150,18 @@ class ProductController extends Controller
         Product::destroy($id);
         return redirect('/admin/product');
     }
-
+    public function images($id){
+        $images = Image::where('product_id', $id)->get();
+        return view('admin.product.uploadImages',['id' => $id,'images'=>$images]);
+    }
     public function uploadImages(Request $request)
     {
         $images = $request->file('file');
+        $product_id = $request->product_id;
         foreach ($images as $key => $value) {
             $path = $value->storeAs('images', $value->getClientOriginalName() );
             Image::create([
-                'product_id' => 1,
+                'product_id' => $product_id,
                 'image'      => $path
             ]);
         }
@@ -163,15 +169,6 @@ class ProductController extends Controller
 
     public function detail($id)
     {
-        // $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
-        // ->join('product_details', 'product_details.product_id', '=', 'products.id')
-        // ->join('option_values', 'option_values.id', '=', 'product_details.size')
-        // //->where('option_values.option_id', 2)
-        // ->select('brands.id as brand_id', 'products.id as product_id', 'products.*', 'brands.name as brand_name', 'option_values.value as name_size', 'product_details.*')
-        // ->orderby('products.id','desc')
-        // ->paginate(10);
-        //ok oke
-        //$product_detail = ProductDetail::join('')
 
         $products = Product::join('brands', 'brands.id', '=', "products.brand_id")
         ->join('categories', 'categories.id', '=', "products.category_id")
@@ -184,22 +181,53 @@ class ProductController extends Controller
        
         ->where('product_id', $id)->get();
 
+        $images = Image::where('product_id', $id)->get();
+
+        $colors = Color::get();
+
+        $sizes = Size::get();
         //dd($product_details);
-        return view('admin.product.product_detail',['row'=>$products,'data'=>$product_details]);
+        return view('admin.product_detail.index',['product'=>$products,'data'=>$product_details,'images'=>$images, 'colors'=>$colors,'sizes'=>$sizes]);
     }
 
+    public function mainShop()
+    {
 
+        $products = Product::get();
+        foreach ($products as $product) {
+            $product->images = Product::join('images', 'products.id', '=', "images.product_id")
+            ->select('images.image as product_image')->where('products.id', $product->id)->get();
+        }
 
+        //dd($products);
+        //join('images', 'products.id', '=', "images.product_id")
 
+        // ->select('products.*', 'images.image as product_images')
+        // ->orderby('products.id','desc')
+        // ->paginate(10);
+        //dd($products);
+        return view('shop.index',['products'=>$products]);
+    }
+    public function singleShop($id)
+    {
 
+        $product = Product::join('brands', 'brands.id', '=', "products.brand_id")
+        ->join('categories', 'categories.id', '=', "products.category_id")
+        ->select('products.*','brands.name as brand_name','categories.name as category_name')
+        ->find($id);
+        
+        $product->images = Product::join('images', 'products.id', '=', "images.product_id")
+        ->select('images.image as product_image')->where('products.id', $id)->get();
+        
 
+        //dd($product);
+        //join('images', 'products.id', '=', "images.product_id")
 
-
-
-
-
-
-
-
+        // ->select('products.*', 'images.image as product_images')
+        // ->orderby('products.id','desc')
+        // ->paginate(10);
+        //dd($products);
+        return view('shop.single',['product'=>$product]);
+    }
 
 }

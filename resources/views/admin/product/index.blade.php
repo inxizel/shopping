@@ -247,7 +247,7 @@
             <a href="javascript:;" class="btn btn-outline-danger btn-icon mg-r-5 btn-delete" data-id="{{$row->id}}">
               <div><i class="fa fa-trash-o"></i></div>
             </a>
-            <a href="/admin/product-image" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
+            <a href="/admin/product/images/{{$row->id}}" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
               <div><i class="fa fa-file-image-o"></i></div>
             </a>
             <a href="/admin/product/detail/{{$row->id}}" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">

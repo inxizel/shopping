@@ -9,52 +9,6 @@
 <script>
   $( ".product" ).addClass( "active show-sub" );
 </script>
-<script language="javascript">
-  function ChangeToSlug()
-  {
-      var title, slug;
-
-      //Lấy text từ thẻ input title 
-      title = document.getElementById("name-add").value;
-
-      //Đổi chữ hoa thành chữ thường
-      slug = title.toLowerCase();
-
-      //Đổi ký tự có dấu thành không dấu
-      slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-      slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-      slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-      slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-      slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-      slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-      slug = slug.replace(/đ/gi, 'd');
-      //Xóa các ký tự đặt biệt
-      slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
-      //Đổi khoảng trắng thành ký tự gạch ngang
-      slug = slug.replace(/ /gi, "-");
-      //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
-      //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
-      slug = slug.replace(/\-\-\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-\-/gi, '-');
-      slug = slug.replace(/\-\-/gi, '-');
-      //Xóa các ký tự gạch ngang ở đầu và cuối
-      slug = '@' + slug + '@';
-      slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-      //In slug ra textbox có id “slug”
-      return slug;
-  }
-
-  $("#name-add").change(function(){
-    var slug = 'Permalink: <span  style=\"color: #17a2b8;\">http://domain.com/'+ChangeToSlug()+'</span>' ;
-    //alert(slug);
-    $("#slug").html(slug);
-    $("#slug-add").val(ChangeToSlug());
-
-  });
-</script>
-
-
 
 <script >
   $('.btn-add').click(function(){
@@ -67,17 +21,17 @@
       var data = new FormData();
       
       //data.append('image', $('#image-add')[0].files[0]);
-      data.append('name', $('#name-add').val());
-      data.append('description', $('#description-add').val());
-      data.append('slug', $('#slug-add').val());
+      data.append('product_id', $('#product_id-add').val());
       data.append('product_code', $('#code-add').val());
-      data.append('brand', $('#brand-add').val());
-      data.append('category', $('#category-add').val());
-      data.append('price', $('#price-add').val());
+      data.append('color', $('#color-add').val());
+      data.append('size', $('#size-add').val());
+      data.append('quantity', $('#quantity-add').val());
+  
     
       e.preventDefault();
       //lấy attribute data-url của form lưu vào biến url
       var url = $(this).attr('data-url');
+      var url_reload = $(this).attr('url-reload');
     
       $.ajax({
         //sử dụng phương thức post
@@ -95,7 +49,7 @@
 
           console.log(response);
           setTimeout(function () {
-            window.location.href="/admin/product";
+            window.location.href= url_reload;
           },800);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -231,38 +185,35 @@
           <th class="wd-5p">Category</th>
           <th class="wd-5p">Brand</th>
           <th class="wd-5p">Price</th>
-          <th class="wd-10p">Created At</th>
-          <th class="wd-15p">Action</th>
+         
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>{{$row->id}}</td>
-          <td>{{$row->product_code}}</td>
-          <td>{{$row->name}}</td>
-          <td>{{$row->category_name}}</td>
-          <td>{{$row->brand_name}}</td>
-          <td><b>{{number_format($row->price)}}</b><sup>vnd</sup></td>
-          <td>{{ $row->created_at }}</td>      
-          <td>
-            <a href="javascript:;" class="btn btn-outline-primary btn-icon mg-r-5 btn-edit" data-id="{{$row->id}}"> 
-              <div><i class="fa fa-pencil"></i></div>
-            </a>
-            <a href="javascript:;" class="btn btn-outline-danger btn-icon mg-r-5 btn-delete" data-id="{{$row->id}}">
-              <div><i class="fa fa-trash-o"></i></div>
-            </a>
-            <a href="/admin/product-image" class="btn btn-outline-success btn-icon mg-r-5" data-id="{{$row->id}}">
-              <div><i class="fa fa-file-image-o"></i></div>
-            </a>
-            <a href="/admin/product-image" class="btn btn-outline-warning btn-icon mg-r-5" data-id="{{$row->id}}">
-              <div><i class="fa fa-puzzle-piece"></i></div>
-            </a>
+          <td>{{$product->id}}</td>
+          <td>{{$product->product_code}}</td>
+          <td>{{$product->name}}</td>
+          <td>{{$product->category_name}}</td>
+          <td>{{$product->brand_name}}</td>
+          <td><b>{{number_format($product->price)}}</b><sup>vnd</sup></td>
             
-          </td>   
         </tr>
         
       </tbody>
     </table>
+  
+      <div class="row">
+        @foreach($images as $row)
+        <div class="col-md-6 col-xl-4">
+          <div class="d-flex bg-gray-200 ht-600 pos-relative align-items-center">
+            <image src="/storage/{{$row->image}}" width="100%"/>
+          </div><!-- d-flex -->
+        </div><!-- col-4 -->  
+        @endforeach      
+      </div><!-- row -->
+    
+
+
 
     {{-- List Detail --}}
     <button class="btn btn-primary btn-block mg-b-10 btn-add"><i class="fa fa-send mg-r-10"></i>Add New</button>
@@ -325,5 +276,7 @@
 
 </div>  
 
+  @include('admin.product_detail.modal.add')
+  @include('admin.product_detail.modal.edit')
 
 @endsection
