@@ -99,27 +99,33 @@
 				@foreach($products as $product)
 
 				<div class="col col1">
-					<div class="f_p_item">
-						<div class="f_p_img">
-							@foreach($product->images as $key => $image)
-							@if($key == 0)
-							<img class="img-fluid" src="storage/{{$image->product_image}}" alt="">
-							@endif
-							@endforeach
-							<div class="p_icon">
-								<a href="#">
-									<i class="lnr lnr-heart"></i>
+					
+						<div class="f_p_item">
+							
+							<div class="f_p_img">
+								@foreach($product->images as $key => $image)
+								@if($key == 0)
+								<a href="/{{$product->id}}">
+								<img class="img-fluid" src="storage/{{$image->product_image}}" alt="">
 								</a>
-								<a href="#">
-									<i class="lnr lnr-cart"></i>
-								</a>
+								@endif
+								@endforeach
+								<div class="p_icon">
+									<a href="#">
+										<i class="lnr lnr-heart"></i>
+									</a>
+									<a href="#">
+										<i class="lnr lnr-cart"></i>
+									</a>
+								</div>
 							</div>
+							
+							<a href="#">
+								<h4>{{$product->name}}</h4>
+							</a>
+							<h5>{{number_format($product->price)}}vnđ</h5>
 						</div>
-						<a href="#">
-							<h4>{{$product->name}}</h4>
-						</a>
-						<h5>{{number_format($product->price)}}vnđ</h5>
-					</div>
+					
 				</div>
 				@endforeach
 				

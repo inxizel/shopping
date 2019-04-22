@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Cart;
+
 
 use App\Product;
 use App\Image;
@@ -199,13 +201,6 @@ class ProductController extends Controller
             ->select('images.image as product_image')->where('products.id', $product->id)->get();
         }
 
-        //dd($products);
-        //join('images', 'products.id', '=', "images.product_id")
-
-        // ->select('products.*', 'images.image as product_images')
-        // ->orderby('products.id','desc')
-        // ->paginate(10);
-        //dd($products);
         return view('shop.index',['products'=>$products]);
     }
     public function singleShop($id)
@@ -217,17 +212,75 @@ class ProductController extends Controller
         ->find($id);
         
         $product->images = Product::join('images', 'products.id', '=', "images.product_id")
-        ->select('images.image as product_image')->where('products.id', $id)->get();
-        
+        ->select('images.image as product_image')
+        ->where('products.id', $id)
+        ->get();
 
-        //dd($product);
-        //join('images', 'products.id', '=', "images.product_id")
+        $product->sizes = ProductDetail::join('sizes', 'sizes.id', '=', 'product_details.size_id')
+        ->select('sizes.value as size_name','sizes.id as size_id')
+        ->where('product_id', $id)
+        ->get();
 
-        // ->select('products.*', 'images.image as product_images')
-        // ->orderby('products.id','desc')
-        // ->paginate(10);
-        //dd($products);
+    
         return view('shop.single',['product'=>$product]);
+    }
+
+    public function add2cart(Request $request)
+    {
+        $id = $request->id;
+        $product = Product::find($id);
+
+        $size_id = $request->size_id;
+        $size = Size::find($size_id);
+
+        $images = Product::join('images', 'products.id', '=', "images.product_id")
+        ->select('images.image as product_image')
+        ->where('products.id', $id)
+        ->first();
+        $thumbnail = $images['product_image'];
+
+        Cart::add(['id' => $product['id'], 'name' => $product['name'], 'qty' => $request->qty, 'price' => $product['price'], 'weight' => 0, 'options' => ['size' => $size['value'],'thumbnail' => $thumbnail ]]);
+        
+    }
+    public function viewCart(){
+
+        $carts  = Cart::content();
+        //dd($carts);
+        return view('shop.cart',['carts'=>$carts]);
+
+    }
+
+    public function upQty(Request $request){
+        $rowId = $request->rowId;
+
+        $cart = Cart::get($rowId);
+
+        
+        $qty = $cart->qty;
+
+        if($qty >= 1 ){
+            $qty++;
+        }
+
+        Cart::update($rowId, $qty); // Will update the quantity
+
+        return $qty;
+    }
+    public function downQty(Request $request){
+        $rowId = $request->rowId;
+        $qty = $request->qty;
+
+        if($qty >= 1 ){
+            $qty--;
+            Cart::update($rowId, $qty); // Will update the quantity
+        }else{
+            Cart::remove($rowId);
+        }
+
+        $callback->err = false;
+        $callback->qty = 
+
+        return $callback;
     }
 
 }

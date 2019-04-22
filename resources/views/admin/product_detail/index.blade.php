@@ -205,7 +205,7 @@
       <div class="row">
         @foreach($images as $row)
         <div class="col-md-6 col-xl-4">
-          <div class="d-flex bg-gray-200 ht-600 pos-relative align-items-center">
+          <div class="d-flex bg-gray-200  pos-relative align-items-center">
             <image src="/storage/{{$row->image}}" width="100%"/>
           </div><!-- d-flex -->
         </div><!-- col-4 -->  

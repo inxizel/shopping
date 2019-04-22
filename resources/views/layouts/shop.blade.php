@@ -5,6 +5,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="csrf-token" content="{{ csrf_token() }}">​
 	<link rel="icon" href="img/favicon.png" type="image/png">
 	<title>Fashiop</title>
 	<!-- Bootstrap CSS -->
@@ -55,7 +56,7 @@
 			<nav class="navbar navbar-expand-lg navbar-light">
 				<div class="container-fluid">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.html">
+					<a class="navbar-brand logo_h" href="/">
 						<img src="blog_assets/img/logo.png" alt="">
 					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -304,6 +305,15 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="blog_assets/vendors/counter-up/jquery.counterup.js"></script>
 	<script src="blog_assets/js/mail-script.js"></script>
 	<script src="blog_assets/js/theme.js"></script>
+
+	<script type="text/javascript">
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+    </script>
+	@yield('js')
 </body>
 
 </html>

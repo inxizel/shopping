@@ -6,7 +6,53 @@
 @endsection
 
 @section('js')
+<script type="text/javascript">
+	// $(document).on('click', '.choose-size', function () {
+	// 	$('#add2cart').attr('disabled', false)
+	// })
 
+
+    //bắt sự kiện submit form thêm mới
+    $('#form-add-cart').submit(function (e) {
+      e.preventDefault();
+      var data = new FormData();
+      
+      var size_id = $('input[name=size]:checked').val();
+      data.append('size_id', size_id);
+
+      var qty = $('input[name=qty]').val();
+      data.append('qty', qty);
+
+
+      data.append('id', $(this).attr('data-id') );
+
+      // //lấy attribute data-url của form lưu vào biến url
+      
+      var url = $(this).attr('data-url');
+
+      $.ajax({
+        //sử dụng phương thức post
+        type: 'post',
+        url: url,
+        processData: false,
+        contentType: false,
+
+        data: data,
+        success: function (response) {
+          // hiện thông báo thêm mới thành công bằng toastr
+          
+
+          console.log(response);
+         
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          //xử lý lỗi tại đây
+        }
+      })
+    });
+
+
+</script>
 @endsection
 
 
@@ -43,9 +89,7 @@
 							<li data-target="#carouselExampleIndicators" data-slide-to="1">
 								<img src="/blog_assets/img/product/single-product/s-product-s-3.jpg" alt="">
 							</li>
-							<li data-target="#carouselExampleIndicators" data-slide-to="2">
-								<img src="/blog_assets/img/product/single-product/s-product-s-4.jpg" alt="">
-							</li>
+				
 						</ol>
 						<div class="carousel-inner">
 			
@@ -81,28 +125,55 @@
 					</ul>
 					<p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for something that
 						can make your interior look awesome, and at the same time give you the pleasant warm feeling during the winter.</p>
-					<div class="product_count">
-						<label for="qty">Quantity:</label>
-						<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-						<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-						 class="increase items-count" type="button">
-							<i class="lnr lnr-chevron-up"></i>
-						</button>
-						<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-						 class="reduced items-count" type="button">
-							<i class="lnr lnr-chevron-down"></i>
-						</button>
-					</div>
+					<form action="" data-url="/add2cart" method="post" data-id="{{$product->id}}" id="form-add-cart" enctype= "multipart/form-data">
+						<div>
+							@foreach($product->sizes as $key => $size)
+								@if($key == 0)
+								<div class="form-check-inline">
+								  <label class="form-check-label">
+								    <input type="radio" class="form-check-input" name="size" value="{{$size->size_id}}" checked="true">{{$size->size_name}}
+								  </label>
+								</div>
+								@else
+								<div class="form-check-inline">
+								  <label class="form-check-label">
+								    <input type="radio" class="form-check-input" name="size" value="{{$size->size_id}}">{{$size->size_name}}
+								  </label>
+								</div>
+								@endif
+
+
+
+
+							@endforeach
+						</div>
+
+						</br>
+						
+						<div class="product_count">
+							<label for="qty">Quantity:</label>
+							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+							 class="increase items-count" type="button">
+								<i class="lnr lnr-chevron-up"></i>
+							</button>
+							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+							 class="reduced items-count" type="button">
+								<i class="lnr lnr-chevron-down"></i>
+							</button>
+						</div>
+						
+						<div class="card_area">
+							<button class="main_btn" type="submit" id="add2cart" >Add to Cart</button>
+							<a class="icon_btn" href="#">
+								<i class="lnr lnr lnr-diamond"></i>
+							</a>
+							<a class="icon_btn" href="#">
+								<i class="lnr lnr lnr-heart"></i>
+							</a>
+						</div>
+					</form>
 					
-					<div class="card_area">
-						<a class="main_btn" href="#">Add to Cart</a>
-						<a class="icon_btn" href="#">
-							<i class="lnr lnr lnr-diamond"></i>
-						</a>
-						<a class="icon_btn" href="#">
-							<i class="lnr lnr lnr-heart"></i>
-						</a>
-					</div>
 				</div>
 			</div>
 		</div>
